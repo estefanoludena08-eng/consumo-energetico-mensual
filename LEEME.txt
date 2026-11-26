@@ -1,0 +1,32 @@
+PROYECTO: PREDICCIÓN DEL CONSUMO ENERGÉTICO (datos de Candanedo et al., 2017)
+
+Contenido
+- Modelo_ia_prediccion_consumo.ows : workflow de Orange (versión 3.41 o superior).
+- energydata_complete.csv          : datos originales de Candanedo et al. (2017). Debe estar en la MISMA carpeta que el .ows.
+- modelo_random_forest.pkcls       : modelo Random Forest entrenado (se descarga aparte desde Google Drive, ver README.md, o se regenera en Orange).
+- Informe_Prediccion_Consumo.docx  : informe completo (secciones 1 a 5, referencias y anexos).
+- app.py / requirements.txt        : prototipo WattCast (Streamlit).
+- figuras/                         : todas las figuras del informe y capturas extra.
+
+Cómo abrir el workflow
+1. Descomprimir la carpeta completa (no mover el CSV a otro lugar).
+2. Abrir Orange y elegir File > Open > Modelo_ia_prediccion_consumo.ows.
+3. En el widget "Datos (energydata_complete)" aparece el aviso "file is too large to load automatically":
+   hacer doble clic en el widget y presionar "Reload". Es normal en Orange para archivos grandes.
+4. Esperar 1 a 3 minutos: Orange entrena los 6 modelos. Los resultados están en el widget "MAE, RMSE, R2".
+5. El widget "Guardar modelo (prototipo)" vuelve a guardar modelo_random_forest.pkcls en la misma carpeta.
+
+Resultados esperados (25 % de prueba, 4933 registros)
+Modelo              RMSE    MAE     R2
+Random Forest       68,44   32,78   0,518
+AdaBoost            71,81   28,49   0,470
+SVM                 80,92   33,50   0,327
+Gradient Boosting   82,18   44,47   0,305
+Red neuronal        83,71   47,45   0,279
+Regresión lineal    89,90   51,73   0,169
+
+Cómo ejecutar el prototipo
+1. Instalar Python 3.10 o superior.
+2. En una terminal, dentro de esta carpeta:  pip install -r requirements.txt
+3. Ejecutar:  streamlit run app.py   (se abre http://localhost:8501)
+4. Mover los controles y presionar "Predecir consumo".
