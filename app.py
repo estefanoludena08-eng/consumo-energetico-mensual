@@ -143,8 +143,8 @@ if "intro_vista" not in st.session_state:          # aparece solo al abrir la ap
         for i, c in enumerate("WattCast"))
     circuitos = "".join(
         f"<path d='{d}' style='animation-delay:{k * 0.12:.2f}s'/>" for k, d in enumerate([
-            "M-50 120 H260 V300 H430", "M1050 90 H760 V260 H570", "M-50 640 H220 V420 H430",
-            "M1050 650 H800 V440 H570", "M500 -40 V190", "M500 760 V420"]))
+            "M-50 110 H250 V285 H425", "M1050 80 H770 V285 H575", "M-50 650 H230 V470 H380",
+            "M1050 660 H790 V470 H620", "M500 -40 V265", "M500 760 V515"]))
     st.markdown(f"""
 <style>
 .wc-intro{{position:fixed;inset:0;z-index:999999;pointer-events:none;overflow:hidden}}
@@ -153,7 +153,7 @@ if "intro_vista" not in st.session_state:          # aparece solo al abrir la ap
 .wc-stage{{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   animation:wcStageOut .5s ease-in 3.4s forwards}}
 .wc-grid{{position:absolute;left:-50%;right:-50%;top:45%;bottom:-60%;
-  background-image:linear-gradient(#26345e 1px,transparent 1px),linear-gradient(90deg,#26345e 1px,transparent 1px);
+  background-image:linear-gradient(#34477e 1px,transparent 1px),linear-gradient(90deg,#34477e 1px,transparent 1px);
   background-size:46px 46px;transform:perspective(500px) rotateX(62deg);opacity:0;
   animation:wcGridIn 1s ease .1s forwards,wcGridMove 1.2s linear infinite}}
 .wc-circ{{position:absolute;inset:0;width:100%;height:100%}}
@@ -181,7 +181,7 @@ if "intro_vista" not in st.session_state:          # aparece solo al abrir la ap
 .wc-pct{{margin-top:8px;color:#f9c80e;font:600 .95rem 'Outfit',sans-serif;text-align:right;counter-reset:p var(--pct);
   animation:wcCount 2.9s cubic-bezier(.6,0,.2,1) .4s forwards}}
 .wc-pct:after{{content:"Cargando energía… " counter(p) "%"}}
-@keyframes wcGridIn{{to{{opacity:.6}}}}
+@keyframes wcGridIn{{to{{opacity:.85}}}}
 @keyframes wcGridMove{{to{{background-position:0 46px}}}}
 @keyframes wcDraw{{to{{stroke-dashoffset:0}}}}
 @keyframes wcBoltIn{{to{{opacity:1;transform:none}}}}
@@ -216,6 +216,15 @@ if "intro_vista" not in st.session_state:          # aparece solo al abrir la ap
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<div class="wc-hero">
+  <div><span class="wc-bolt">⚡</span><span class="wc-logo">WattCast</span></div>
+  <div class="wc-sub">Pronóstico del consumo mensual de los electrodomésticos de una vivienda
+  con Random Forest (datos de Candanedo et al., 2017).</div>
+  <div class="wc-chips"><span>🌲 Random Forest · 100 árboles</span><span>🎯 R² = 0,50</span>
+  <span>📊 19 735 registros</span></div>
+</div>""", unsafe_allow_html=True)
+
 # ---------------------------------------------------------------- datos y modelo
 df = load_data()
 with st.spinner("Preparando el modelo (solo la primera vez)..."):
@@ -223,21 +232,7 @@ with st.spinner("Preparando el modelo (solo la primera vez)..."):
 med = df.median(numeric_only=True)
 ref_mes = monthly_reference(df)
 
-st.markdown(f"""
-<div class="wc-hero">
-  <div><span class="wc-bolt">⚡</span><span class="wc-logo">WattCast</span></div>
-  <div class="wc-sub">Pronóstico del consumo mensual de los electrodomésticos de una vivienda
-  con Random Forest (datos de Candanedo et al., 2017).</div>
-  <div class="wc-chips"><span>🌲 Random Forest · 100 árboles</span><span>🎯 R² = {metrics['R2']:.2f}</span>
-  <span>📊 {len(df):,} registros</span></div>
-</div>""".replace(",", " ", 1) if False else f"""
-<div class="wc-hero">
-  <div><span class="wc-bolt">⚡</span><span class="wc-logo">WattCast</span></div>
-  <div class="wc-sub">Pronóstico del consumo mensual de los electrodomésticos de una vivienda
-  con Random Forest (datos de Candanedo et al., 2017).</div>
-  <div class="wc-chips"><span>🌲 Random Forest · 100 árboles</span><span>🎯 R² = {metrics['R2']:.2f}</span>
-  <span>📊 {len(df):,} registros</span></div>
-</div>""".replace(f"{len(df):,}", f"{len(df):,}".replace(",", " ")), unsafe_allow_html=True)
+
 
 for k, v in DEFAULTS.items():
     st.session_state.setdefault(k, v)
@@ -301,13 +296,13 @@ if st.session_state.get("mostrar"):
 .top{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:center}
 .gauge{text-align:center}
 .gauge svg{width:100%;max-width:300px;overflow:visible}
-.big{font-size:2.7rem;font-weight:800;line-height:1;margin-top:-64px}
+.big{font-size:2.7rem;font-weight:800;line-height:1;margin-top:2px}
 .big small{font-size:1rem;font-weight:600;color:#aab3cc;margin-left:4px}
 .pill{display:inline-block;margin-top:12px;padding:5px 16px;border-radius:999px;font-weight:800;letter-spacing:.05em;
   background:var(--c);color:#0b1020;box-shadow:0 0 22px var(--c);animation:pop .5s cubic-bezier(.2,1.6,.4,1) 1.4s both}
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .k{background:#ffffff10;border:1px solid #ffffff1f;border-radius:14px;padding:12px;opacity:0;animation:rise .5s ease forwards}
-.k b{display:block;font-size:1.3rem;font-weight:800}
+.k b{display:block;font-size:1.25rem;font-weight:800;white-space:nowrap}
 .k span{font-size:.8rem;color:#aab3cc}
 .note{font-size:.8rem;color:#aab3cc;margin-top:14px;border-top:1px solid #ffffff1a;padding-top:10px}
 .chart{margin-top:16px;border-radius:20px;padding:18px 16px 10px;background:#fff;box-shadow:0 10px 30px -18px #16213e88;
@@ -321,12 +316,13 @@ svg text{font-family:'Outfit',sans-serif}
 @keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
 @keyframes breathe{50%{opacity:.45;transform:scale(1.1)}}
 @media(max-width:560px){.top{grid-template-columns:1fr}.big{font-size:2.3rem}}
+.gauge svg{max-width:270px}
 </style>
 <div class="card" id="card">
   <div class="lbl">Consumo mensual estimado de los electrodomésticos</div>
   <div class="top">
     <div class="gauge">
-      <svg viewBox="0 0 300 175" id="g"></svg>
+      <svg viewBox="0 0 300 162" id="g"></svg>
       <div class="big"><span id="num">0</span><small>kWh/mes</small></div>
       <div class="pill" id="pill"></div>
     </div>
@@ -341,7 +337,7 @@ svg text{font-family:'Outfit',sans-serif}
 </div>
 <script>
 const D = __DATA__;
-const f = (x, d = 0) => Number(x).toLocaleString('es-PE', {minimumFractionDigits: d, maximumFractionDigits: d});
+const f = (x, d = 0) => Number(x).toLocaleString('es-ES', {minimumFractionDigits: d, maximumFractionDigits: d});
 document.getElementById('card').style.setProperty('--c', D.color);
 const pill = document.getElementById('pill'); pill.style.setProperty('--c', D.color); pill.textContent = 'NIVEL ' + D.nivel;
 // medidor semicircular 0-900 kWh/mes
@@ -363,8 +359,8 @@ const el = document.getElementById('num'), t0 = performance.now();
   el.textContent = f(D.mes * e); if (p < 1) requestAnimationFrame(tick); })(t0);
 // tarjetas
 const K = [['📅 ' + f(D.dia, 1) + ' kWh', 'consumo por día'], ['⏱️ ' + f(D.wh10) + ' Wh', `cada 10 min a las ${D.hora} h`],
-  [(D.vs > 0 ? '📈 +' : '📉 ') + f(D.vs) + ' %', `frente al promedio de la casa (${f(D.prom)} kWh/mes)`],
-  [`🔺 ${D.pico} h · 🔻 ${D.valle} h`, 'hora pico · hora valle']];
+  [(D.vs > 0 ? '📈 +' : '📉 ') + f(D.vs) + ' %', `vs. promedio (${f(D.prom)} kWh/mes)`],
+  [`🔺${D.pico} h 🔻${D.valle} h`, 'hora pico y hora valle']];
 document.getElementById('kpis').innerHTML = K.map((k, i) => `<div class="k" style="animation-delay:${.4 + i * .12}s"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
 document.getElementById('note').textContent = `Este pronóstico supera al ${D.pct} % de los días registrados. Bajo: hasta ${D.low} kWh/mes · Medio: ${D.low}–${D.high} · Alto: más de ${D.high}. Se calcula con 30 días iguales y las condiciones ingresadas durante las 24 horas.`;
 document.getElementById('cp').textContent = `La barra naranja es la hora elegida (${D.hora} h). Pico a las ${D.pico} h con ${f(D.perfil[D.pico])} Wh.`;
@@ -384,7 +380,7 @@ function draw() {
   ch.innerHTML = o; }
 draw(); new ResizeObserver(draw).observe(ch);
 </script>
-""".replace("__DATA__", json.dumps(datos)), height=760, scrolling=False)
+""".replace("__DATA__", json.dumps(datos)), height=700, scrolling=False)
 
 with st.expander("📈 Desempeño del modelo (25 % de datos de prueba)"):
     st.write(f"RMSE = {metrics['RMSE']:.2f} Wh · MAE = {metrics['MAE']:.2f} Wh · "
